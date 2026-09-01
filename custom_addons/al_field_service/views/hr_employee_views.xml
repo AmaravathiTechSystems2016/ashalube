@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="hr_employee_view_form_fsm" model="ir.ui.view">
+        <field name="name">hr.employee.form.fsm</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Field Service" name="fsm" groups="al_field_service.group_fsm_user">
+                    <group>
+                        <field name="fsm_grade"/>
+                        <field name="fsm_status_override"/>
+                        <field name="fsm_status" widget="badge"
+                            decoration-success="fsm_status == 'idle'"
+                            decoration-warning="fsm_status == 'busy'"
+                            decoration-muted="fsm_status == 'off'"/>
+                        <field name="fsm_open_job_count"/>
+                        <field name="fsm_skill_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        <field name="fsm_van_location_id"/>
+                        <field name="fsm_serial_count"/>
+                    </group>
+                    <button name="action_view_installed_serials" type="object" string="Installed serials" class="btn-secondary" invisible="not fsm_serial_count"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="hr_employee_view_list_fsm" model="ir.ui.view">
+        <field name="name">hr.employee.list.fsm</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="fsm_grade"/>
+                <field name="fsm_status" widget="badge"
+                    decoration-success="fsm_status == 'idle'"
+                    decoration-warning="fsm_status == 'busy'"
+                    decoration-muted="fsm_status == 'off'"/>
+                <field name="fsm_open_job_count"/>
+                <field name="fsm_serial_count"/>
+                <field name="work_email"/>
+                <field name="job_title"/>
+            </list>
+        </field>
+    </record>
+    <record id="hr_employee_view_search_fsm" model="ir.ui.view">
+        <field name="name">hr.employee.search.fsm</field>
+        <field name="model">hr.employee</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter string="Idle" name="idle" domain="[('fsm_status', '=', 'idle')]"/>
+                <filter string="Busy" name="busy" domain="[('fsm_status', '=', 'busy')]"/>
+                <filter string="Off duty" name="off" domain="[('fsm_status', '=', 'off')]"/>
+                <separator/>
+                <filter string="Grade A" name="grade_a" domain="[('fsm_grade', '=', 'a')]"/>
+                <filter string="Grade B" name="grade_b" domain="[('fsm_grade', '=', 'b')]"/>
+                <filter string="Grade C" name="grade_c" domain="[('fsm_grade', '=', 'c')]"/>
+                <group>
+                    <filter string="Grade" name="group_grade" context="{'group_by': 'fsm_grade'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by': 'fsm_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="fsm_technician_action" model="ir.actions.act_window">
+        <field name="name">Technicians</field>
+        <field name="res_model">hr.employee</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="hr_employee_view_list_fsm"/>
+        <field name="search_view_id" ref="hr_employee_view_search_fsm"/>
+        <field name="context">{'search_default_idle': 0}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Set technician grade A / B / C on the employee Field Service tab.</p>
+        </field>
+    </record>
+</odoo>

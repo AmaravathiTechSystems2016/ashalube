@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fsm_sign_report_view_form" model="ir.ui.view">
+        <field name="name">fsm.sign.report.form</field>
+        <field name="model">fsm.sign.report</field>
+        <field name="arch" type="xml">
+            <form string="Sign Report">
+                <group>
+                    <field name="order_id" readonly="1"/>
+                    <field name="signed_by"/>
+                    <field name="signature" widget="signature"/>
+                </group>
+                <footer>
+                    <button name="action_sign" type="object" string="Sign" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

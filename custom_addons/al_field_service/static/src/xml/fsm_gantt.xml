@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="al_field_service.FsmGantt">
+        <div class="o_fsm_gantt p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3 class="mb-0">Planning</h3>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" t-on-click="onPrev">Previous week</button>
+                    <button class="btn btn-secondary" t-on-click="onToday">This week</button>
+                    <button class="btn btn-secondary" t-on-click="onNext">Next week</button>
+                </div>
+            </div>
+            <div class="o_fsm_gantt_grid">
+                <div class="o_fsm_gantt_head">
+                    <div class="o_fsm_gantt_label">Technician</div>
+                    <div class="o_fsm_gantt_days">
+                        <t t-foreach="state.days" t-as="day" t-key="day">
+                            <div class="o_fsm_gantt_day" t-esc="day"/>
+                        </t>
+                    </div>
+                </div>
+                <t t-foreach="state.rows" t-as="row" t-key="row.id">
+                    <div class="o_fsm_gantt_row">
+                        <div class="o_fsm_gantt_label" t-esc="row.name"/>
+                        <div class="o_fsm_gantt_track">
+                            <t t-foreach="row.bars" t-as="bar" t-key="bar.id">
+                                <div class="o_fsm_gantt_bar"
+                                     t-att-class="bar.state"
+                                     t-attf-style="left: {{bar.left}}%; width: {{bar.width}}%;"
+                                     t-att-data-id="bar.id"
+                                     t-on-click="onBarClick"
+                                     t-att-title="bar.name + ' — ' + bar.partner">
+                                    <span t-esc="bar.name"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+                <div t-if="!state.rows.length" class="text-muted p-4">No planned jobs this week.</div>
+            </div>
+        </div>
+    </t>
+</templates>

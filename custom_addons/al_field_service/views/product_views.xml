@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_template_form_fsm" model="ir.ui.view">
+        <field name="name">product.template.form.fsm</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="fsm_ok"/>
+                <field name="fsm_create_task" invisible="type != 'service'"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="fsm_product_action" model="ir.actions.act_window">
+        <field name="name">Products</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('fsm_ok', '=', True)]</field>
+        <field name="context">{'default_fsm_ok': True}</field>
+    </record>
+</odoo>

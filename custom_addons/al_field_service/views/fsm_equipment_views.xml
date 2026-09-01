@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fsm_equipment_view_search" model="ir.ui.view">
+        <field name="name">fsm.equipment.search</field>
+        <field name="model">fsm.equipment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="serial"/>
+                <field name="installer_id"/>
+                <field name="partner_id"/>
+                <filter string="Under warranty" name="in_warranty" domain="[('under_warranty', '=', True)]"/>
+                <filter string="Expired warranty" name="expired" domain="[('under_warranty', '=', False), ('warranty_end', '!=', False)]"/>
+                <group>
+                    <filter string="Installer" name="group_installer" context="{'group_by': 'installer_id'}"/>
+                    <filter string="Grade" name="group_grade" context="{'group_by': 'installer_grade'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="fsm_equipment_view_list" model="ir.ui.view">
+        <field name="name">fsm.equipment.list</field>
+        <field name="model">fsm.equipment</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="code"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="serial"/>
+                <field name="installer_id"/>
+                <field name="installer_grade"/>
+                <field name="install_date"/>
+                <field name="warranty_end"/>
+                <field name="under_warranty"/>
+                <field name="next_service_date"/>
+            </list>
+        </field>
+    </record>
+    <record id="fsm_equipment_view_form" model="ir.ui.view">
+        <field name="name">fsm.equipment.form</field>
+        <field name="model">fsm.equipment</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-wrench">
+                            <field name="order_count" widget="statinfo" string="Orders"/>
+                        </button>
+                        <button name="action_view_installations" type="object" class="oe_stat_button" icon="fa-check-square">
+                            <field name="installation_count" widget="statinfo" string="Installations"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Under Warranty" bg_color="text-bg-success" invisible="not under_warranty"/>
+                    <group>
+                        <group string="Asset">
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="partner_id"/>
+                            <field name="location_id"/>
+                            <field name="product_id"/>
+                            <field name="serial"/>
+                            <field name="model_number"/>
+                            <field name="manufacturer"/>
+                        </group>
+                        <group string="Installation &amp; warranty">
+                            <field name="installer_id"/>
+                            <field name="installer_grade"/>
+                            <field name="install_date"/>
+                            <field name="warranty_type"/>
+                            <field name="warranty_months"/>
+                            <field name="warranty_start"/>
+                            <field name="warranty_end"/>
+                            <field name="under_warranty"/>
+                            <field name="next_service_date"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <separator string="Warranty terms"/>
+                    <field name="warranty_terms"/>
+                    <separator string="Service history notes"/>
+                    <field name="note" placeholder="Service history notes..."/>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="fsm_equipment_action" model="ir.actions.act_window">
+        <field name="name">Equipment</field>
+        <field name="res_model">fsm.equipment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

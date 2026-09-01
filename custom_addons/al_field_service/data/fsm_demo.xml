@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fsm_tag_priority" model="fsm.tag">
+        <field name="name">Priority site</field>
+        <field name="color">2</field>
+    </record>
+    <record id="fsm_skill_hvac" model="fsm.skill">
+        <field name="name">HVAC</field>
+    </record>
+    <record id="fsm_checklist_tpl_demo" model="fsm.checklist.template">
+        <field name="name">Standard close-out</field>
+    </record>
+    <record id="fsm_checklist_tpl_line_safety" model="fsm.checklist.template.line">
+        <field name="template_id" ref="fsm_checklist_tpl_demo"/>
+        <field name="name">Site safety brief complete</field>
+        <field name="is_mandatory" eval="True"/>
+    </record>
+    <record id="fsm_checklist_tpl_line_clean" model="fsm.checklist.template.line">
+        <field name="template_id" ref="fsm_checklist_tpl_demo"/>
+        <field name="name">Work area cleaned</field>
+        <field name="is_mandatory" eval="True"/>
+    </record>
+    <record id="fsm_worksheet_tpl_demo" model="fsm.worksheet.template">
+        <field name="name">Standard service worksheet</field>
+        <field name="body">&lt;p&gt;Findings, parts replaced, and recommendations.&lt;/p&gt;</field>
+    </record>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_fsm" model="ir.ui.view">
+        <field name="name">crm.lead.form.fsm</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_create_fsm_order" type="object" string="Create Work Order" class="btn-secondary" invisible="not partner_id"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_fsm_orders" type="object" class="oe_stat_button" icon="fa-wrench" invisible="not fsm_order_count">
+                    <field name="fsm_order_count" widget="statinfo" string="Work Orders"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

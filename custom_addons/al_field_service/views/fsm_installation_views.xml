@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fsm_installation_view_search" model="ir.ui.view">
+        <field name="name">fsm.installation.search</field>
+        <field name="model">fsm.installation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="serial"/>
+                <field name="partner_id"/>
+                <field name="technician_id"/>
+                <filter string="Today" name="today" date="install_datetime"/>
+                <group>
+                    <filter string="Technician" name="group_tech" context="{'group_by': 'technician_id'}"/>
+                    <filter string="Grade" name="group_grade" context="{'group_by': 'technician_grade'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="fsm_installation_view_list" model="ir.ui.view">
+        <field name="name">fsm.installation.list</field>
+        <field name="model">fsm.installation</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="serial"/>
+                <field name="partner_id"/>
+                <field name="technician_id"/>
+                <field name="technician_grade"/>
+                <field name="install_datetime"/>
+                <field name="warranty_end"/>
+                <field name="photo_count"/>
+            </list>
+        </field>
+    </record>
+    <record id="fsm_installation_view_form" model="ir.ui.view">
+        <field name="name">fsm.installation.form</field>
+        <field name="model">fsm.installation</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_open_order" type="object" string="Work Order" invisible="not order_id"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Installation">
+                            <field name="partner_id"/>
+                            <field name="location_id"/>
+                            <field name="order_id"/>
+                            <field name="equipment_id"/>
+                            <field name="product_id"/>
+                            <field name="serial"/>
+                            <field name="model_number"/>
+                            <field name="manufacturer"/>
+                            <field name="capacity"/>
+                        </group>
+                        <group string="Who / when / warranty">
+                            <field name="install_datetime"/>
+                            <field name="technician_id"/>
+                            <field name="technician_grade"/>
+                            <field name="warranty_type"/>
+                            <field name="warranty_months"/>
+                            <field name="warranty_start"/>
+                            <field name="warranty_end"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Collected information" name="collected">
+                            <field name="collected_notes" placeholder="Readings, site conditions, customer remarks..."/>
+                            <separator string="Commissioning notes"/>
+                            <field name="commissioning_notes"/>
+                            <separator string="Warranty terms"/>
+                            <field name="warranty_terms"/>
+                        </page>
+                        <page string="Photos" name="photos">
+                            <field name="photo_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="image" widget="image" options="{'size': [64, 64]}"/>
+                                    <field name="captured_on"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="fsm_installation_action" model="ir.actions.act_window">
+        <field name="name">Installation Records</field>
+        <field name="res_model">fsm.installation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

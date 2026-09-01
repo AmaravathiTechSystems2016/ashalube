@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_fsm_order" model="ir.actions.report">
+        <field name="name">Field Service Report</field>
+        <field name="model">fsm.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">al_field_service.report_fsm_order</field>
+        <field name="report_file">al_field_service.report_fsm_order</field>
+        <field name="print_report_name">'FSM - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_fsm_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_fsm_order_document">
+        <t t-call="web.external_layout">
+            <div class="page o_fsm_report">
+                <h2>Field Service Report</h2>
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <strong>Work Order</strong><div t-field="doc.name"/>
+                        <strong>Customer</strong><div t-field="doc.partner_id"/>
+                        <strong>Location</strong><div t-field="doc.location_id"/>
+                        <strong>Supervisor</strong><div t-field="doc.supervisor_id"/>
+                    </div>
+                    <div class="col-6">
+                        <strong>Status</strong><div t-field="doc.stage_id"/>
+                        <strong>Planned Start</strong><div t-field="doc.planned_date_begin"/>
+                        <strong>Planned End</strong><div t-field="doc.planned_date_end"/>
+                    </div>
+                </div>
+                <h4>Work Description</h4>
+                <div t-field="doc.description"/>
+                <h4>Resolution Notes</h4>
+                <div t-field="doc.resolution_notes"/>
+                <h4>Checklist</h4>
+                <table class="table table-sm">
+                    <thead><tr><th>Item</th><th>Mandatory</th><th>Done</th><th>Note</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="doc.checklist_line_ids" t-as="line">
+                            <td t-field="line.name"/>
+                            <td><t t-if="line.is_mandatory">Yes</t></td>
+                            <td><t t-if="line.is_done">Yes</t></td>
+                            <td t-field="line.note"/>
+                        </tr>
+                    </tbody>
+                </table>
+                <h4>Materials</h4>
+                <table class="table table-sm">
+                    <thead><tr><th>Product</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="doc.material_line_ids" t-as="line">
+                            <td t-field="line.name"/>
+                            <td t-field="line.product_uom_qty"/>
+                            <td t-field="line.price_unit"/>
+                            <td t-field="line.price_subtotal"/>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr><td colspan="3"><strong>Total Amount</strong></td><td t-field="doc.total_amount"/></tr>
+                    </tfoot>
+                </table>
+                <h4>Timesheets</h4>
+                <table class="table table-sm">
+                    <thead><tr><th>Date</th><th>Employee</th><th>Description</th><th>Time Spent</th></tr></thead>
+                    <tbody>
+                        <tr t-foreach="doc.timesheet_ids" t-as="line">
+                            <td t-field="line.date"/>
+                            <td t-field="line.employee_id"/>
+                            <td t-field="line.description"/>
+                            <td t-field="line.hours"/>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr><td colspan="3">Total Time Spent</td><td t-field="doc.spent_hours"/></tr>
+                        <tr><td colspan="3">Time Remaining</td><td t-field="doc.remaining_hours"/></tr>
+                    </tfoot>
+                </table>
+                <t t-if="doc.signature">
+                    <h4>Customer Signature</h4>
+                    <p>Signed By: <span t-field="doc.signed_by"/> — Signed On: <span t-field="doc.signed_on"/></p>
+                    <img t-att-src="image_data_uri(doc.signature)" style="max-height:80px;"/>
+                </t>
+                <t t-if="doc.technician_signature">
+                    <h4>Technician Signature</h4>
+                    <p>Signed By: <span t-field="doc.technician_signed_by"/> — Signed On: <span t-field="doc.technician_signed_on"/></p>
+                    <img t-att-src="image_data_uri(doc.technician_signature)" style="max-height:80px;"/>
+                </t>
+                <t t-set="photos" t-value="doc.get_photo_attachments()"/>
+                <t t-if="photos">
+                    <h4>On-site photos</h4>
+                    <div class="row">
+                        <t t-foreach="photos" t-as="photo">
+                            <div class="col-4 mb-2">
+                                <img t-att-src="image_data_uri(photo.datas)" style="max-width:100%; max-height:180px;"/>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+    <template id="report_fsm_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="al_field_service.report_fsm_order_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

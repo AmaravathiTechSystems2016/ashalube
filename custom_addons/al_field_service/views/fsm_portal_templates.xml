@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_home_fsm" inherit_id="portal.portal_my_home" name="FSM on My Account" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_service_category_enable" t-value="True"/>
+        </xpath>
+        <div id="portal_service_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/al_field_service/static/src/img/fsm.svg'"/>
+                <t t-set="title">Field Service</t>
+                <t t-set="url" t-value="'/my/fsm'"/>
+                <t t-set="text">Track your service jobs</t>
+                <t t-set="placeholder_count" t-value="'fsm_order_count'"/>
+                <t t-set="show_count" t-value="True"/>
+            </t>
+        </div>
+    </template>
+
+    <template id="portal_my_fsm_orders" name="My Work Orders">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Work Orders</t>
+            </t>
+            <t t-if="not orders">
+                <p>There are currently no work orders for your account.</p>
+            </t>
+            <t t-else="">
+                <div class="table-responsive">
+                    <table class="table o_fsm_portal_table">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Status</th>
+                                <th>Planned</th>
+                                <th>SLA</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="orders" t-as="order">
+                                <td><a t-att-href="order.get_portal_url()"><t t-out="order.name"/></a></td>
+                                <td t-field="order.stage_id"/>
+                                <td t-field="order.planned_date_begin"/>
+                                <td t-field="order.sla_status"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_fsm_order_page" name="Work Order Preview">
+        <t t-call="portal.portal_layout">
+            <t t-set="o_portal_fullwidth_alert" groups="al_field_service.group_fsm_user">
+                <t t-call="portal.portal_back_in_edit_mode">
+                    <t t-set="backend_url" t-value="'/odoo/fsm.order/%s' % (order.id)"/>
+                </t>
+            </t>
+            <div class="container o_fsm_portal_order">
+                <h3 t-field="order.name"/>
+                <p class="text-muted" t-field="order.stage_id"/>
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Customer</strong>
+                        <div t-field="order.partner_id"/>
+                        <strong>Location</strong>
+                        <div t-field="order.location_id"/>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Planned</strong>
+                        <div><span t-field="order.planned_date_begin"/> — <span t-field="order.planned_date_end"/></div>
+                    </div>
+                </div>
+                <h5 class="mt-3">Work details</h5>
+                <div t-field="order.description"/>
+                <div t-field="order.resolution_notes"/>
+                <h5>Materials</h5>
+                <ul>
+                    <li t-foreach="order.material_line_ids" t-as="line">
+                        <t t-out="line.name"/> × <t t-out="line.product_uom_qty"/>
+                    </li>
+                </ul>
+                <t t-if="order.signature">
+                    <h5>Signed by <t t-out="order.signed_by"/></h5>
+                    <img t-att-src="image_data_uri(order.signature)" style="max-height:80px;"/>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

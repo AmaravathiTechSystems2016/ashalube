@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_users_view_form_preferences_fsm" model="ir.ui.view">
+        <field name="name">res.users.preferences.fsm</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+        <field name="arch" type="xml">
+            <group name="other_preferences" position="inside">
+                <field name="fsm_warehouse_id"/>
+            </group>
+        </field>
+    </record>
+    <record id="res_users_view_form_fsm" model="ir.ui.view">
+        <field name="name">res.users.form.fsm</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <group name="other_preferences" position="inside">
+                <field name="fsm_warehouse_id"/>
+            </group>
+        </field>
+    </record>
+</odoo>

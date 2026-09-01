@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mail_template_fsm_sla_breached" model="mail.template">
+        <field name="name">Field Service: SLA Breached</field>
+        <field name="model_id" ref="model_fsm_order"/>
+        <field name="subject">SLA breached: {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.supervisor_id.work_contact_id.id or object.team_id.escalation_user_id.partner_id.id }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Work order <t t-out="object.name"/> for <t t-out="object.partner_id.name"/> has breached its SLA.</p>
+                <p>Response deadline: <t t-out="object.response_deadline"/> — Resolution deadline: <t t-out="object.resolution_deadline"/></p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+    <record id="mail_template_fsm_assigned" model="mail.template">
+        <field name="name">Field Service: Technician assigned</field>
+        <field name="model_id" ref="model_fsm_order"/>
+        <field name="subject">Technician assigned: {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="email_cc">{{ ','.join(filter(None, object.technician_ids.mapped('work_email'))) }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Work order <strong t-out="object.name"/> has been assigned.</p>
+                <p>Customer: <t t-out="object.partner_id.name"/></p>
+                <p>Technicians: <t t-out="', '.join(object.technician_ids.mapped('name'))"/></p>
+                <p>Planned: <t t-out="object.planned_date_begin"/></p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+    <record id="mail_template_fsm_planned" model="mail.template">
+        <field name="name">Field Service: Visit planned</field>
+        <field name="model_id" ref="model_fsm_order"/>
+        <field name="subject">Visit planned: {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="email_cc">{{ ','.join(filter(None, object.technician_ids.mapped('work_email'))) }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Your service visit <strong t-out="object.name"/> is scheduled.</p>
+                <p>From <t t-out="object.planned_date_begin"/> to <t t-out="object.planned_date_end"/>.</p>
+                <p>Technician: <t t-out="', '.join(object.technician_ids.mapped('name'))"/></p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+    <record id="mail_template_fsm_started" model="mail.template">
+        <field name="name">Field Service: Job started</field>
+        <field name="model_id" ref="model_fsm_order"/>
+        <field name="subject">Technician on site: {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Work has started on <strong t-out="object.name"/>.</p>
+                <p>Started at <t t-out="object.actual_date_begin"/>.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+    <record id="mail_template_fsm_done" model="mail.template">
+        <field name="name">Field Service: Job completed</field>
+        <field name="model_id" ref="model_fsm_order"/>
+        <field name="subject">Service completed: {{ object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Work order <strong t-out="object.name"/> is complete.</p>
+                <p>Serial: <t t-out="object.serial_number or (object.equipment_id.serial or '')"/></p>
+                <p>Thank you.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+    <record id="mail_template_fsm_installation" model="mail.template">
+        <field name="name">Field Service: Installation record</field>
+        <field name="model_id" ref="model_fsm_order"/>
+        <field name="subject">Installation completed: {{ object.serial_number }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Installation record created for serial <strong t-out="object.serial_number"/>.</p>
+                <p>Installed on <t t-out="object.installation_id.install_datetime"/> by <t t-out="object.installation_id.technician_id.name"/>.</p>
+                <p>Warranty until <t t-out="object.installation_id.warranty_end"/>.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+    <record id="mail_template_fsm_warranty_expiry" model="mail.template">
+        <field name="name">Field Service: Warranty expiry reminder</field>
+        <field name="model_id" ref="model_fsm_equipment"/>
+        <field name="subject">Warranty expiring: {{ object.serial or object.name }}</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Warranty for <strong t-out="object.name"/> (serial <t t-out="object.serial"/>) ends on <t t-out="object.warranty_end"/>.</p>
+                <p>Installed by <t t-out="object.installer_id.name"/>.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+</odoo>

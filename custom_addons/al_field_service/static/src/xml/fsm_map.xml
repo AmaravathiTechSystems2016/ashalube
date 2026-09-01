@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="al_field_service.FsmMap">
+        <div class="o_fsm_map d-flex h-100">
+            <div class="o_fsm_map_list border-end">
+                <div class="d-flex justify-content-between align-items-center p-3 border-bottom">
+                    <strong>Itinerary</strong>
+                    <button class="btn btn-primary btn-sm" t-on-click="openItinerary" t-att-disabled="!state.itineraryUrl">
+                        View in Google Maps
+                    </button>
+                </div>
+                <t t-foreach="state.pins" t-as="pin" t-key="pin.id">
+                    <div class="o_fsm_map_item p-3 border-bottom"
+                         t-att-class="state.selected and state.selected.id === pin.id ? 'bg-view' : ''"
+                         t-att-data-id="pin.id"
+                         t-on-click="selectPin">
+                        <div class="fw-bold" t-esc="pin.name"/>
+                        <div class="text-muted small" t-esc="pin.partner"/>
+                        <div class="small" t-esc="pin.address"/>
+                        <div class="mt-2 d-flex gap-2">
+                            <button class="btn btn-link btn-sm p-0" t-att-data-id="pin.id" t-on-click="openSelected">Open</button>
+                            <button class="btn btn-link btn-sm p-0" t-att-data-id="pin.id" t-on-click="navigateSelected">Navigate to</button>
+                        </div>
+                    </div>
+                </t>
+                <div t-if="!state.pins.length" class="p-3 text-muted">No jobs with locations.</div>
+            </div>
+            <div class="o_fsm_map_canvas flex-grow-1">
+                <iframe t-if="state.selected" class="w-100 h-100 border-0" t-att-src="osmUrl(state.selected)"/>
+            </div>
+        </div>
+    </t>
+</templates>

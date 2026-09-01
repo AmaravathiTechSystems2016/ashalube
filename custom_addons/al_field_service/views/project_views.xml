@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_project_view_form_fsm" model="ir.ui.view">
+        <field name="name">project.project.form.fsm</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_fsm_orders" type="object" class="oe_stat_button" icon="fa-wrench" invisible="not is_fsm">
+                    <field name="fsm_order_count" widget="statinfo" string="Work Orders"/>
+                </button>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_fsm"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Field Service" name="fsm" invisible="not is_fsm">
+                    <group>
+                        <group>
+                            <field name="fsm_worksheet_template_id"/>
+                            <field name="fsm_service_product_id"/>
+                            <field name="allocated_hours"/>
+                            <field name="fsm_date_from"/>
+                            <field name="fsm_date_to"/>
+                        </group>
+                    </group>
+                    <separator string="Employee hourly rates"/>
+                    <field name="fsm_service_line_ids">
+                        <list editable="bottom">
+                            <field name="employee_id"/>
+                            <field name="hourly_cost"/>
+                            <field name="currency_id" column_invisible="True"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="fsm_project_action" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_fsm', '=', True)]</field>
+        <field name="context">{'default_is_fsm': True}</field>
+    </record>
+</odoo>

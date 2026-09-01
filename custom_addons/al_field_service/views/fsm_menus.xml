@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_fsm_root" name="Field Service" sequence="25" groups="al_field_service.group_fsm_user"/>
+    <menuitem id="menu_fsm_my" name="My Tasks" parent="menu_fsm_root" action="fsm_order_action_my" sequence="10"/>
+    <menuitem id="menu_fsm_all" name="All Tasks" parent="menu_fsm_root" action="fsm_order_action" sequence="20" groups="al_field_service.group_fsm_dispatcher"/>
+    <menuitem id="menu_fsm_installations" name="Installations" parent="menu_fsm_root" action="fsm_installation_action" sequence="22"/>
+    <menuitem id="menu_fsm_technicians" name="Technicians" parent="menu_fsm_root" action="fsm_technician_action" sequence="23"/>
+    <menuitem id="menu_fsm_planning" name="Planning" parent="menu_fsm_root" action="fsm_order_action_planning" sequence="30"/>
+    <menuitem id="menu_fsm_gantt" name="Gantt" parent="menu_fsm_root" action="fsm_gantt_action" sequence="32"/>
+    <menuitem id="menu_fsm_map" name="Map" parent="menu_fsm_root" action="fsm_map_action" sequence="33"/>
+    <menuitem id="menu_fsm_schedule" name="Schedule" parent="menu_fsm_root" action="fsm_order_action_planning" sequence="34"/>
+    <menuitem id="menu_fsm_reporting" name="Reporting" parent="menu_fsm_root" sequence="40" groups="al_field_service.group_fsm_dispatcher"/>
+    <menuitem id="menu_fsm_report_orders" name="Work Orders" parent="menu_fsm_reporting" action="fsm_order_action_report" sequence="10"/>
+    <menuitem id="menu_fsm_report_timesheets" name="Timesheets" parent="menu_fsm_reporting" action="fsm_timesheet_action" sequence="20"/>
+    <menuitem id="menu_fsm_config" name="Configuration" parent="menu_fsm_root" sequence="90" groups="al_field_service.group_fsm_manager"/>
+    <menuitem id="menu_fsm_settings" name="Settings" parent="menu_fsm_config" action="action_fsm_config_settings" sequence="1"/>
+    <menuitem id="menu_fsm_projects" name="Projects" parent="menu_fsm_config" action="fsm_project_action" sequence="10"/>
+    <menuitem id="menu_fsm_teams" name="Service Teams" parent="menu_fsm_config" action="fsm_team_action" sequence="20"/>
+    <menuitem id="menu_fsm_locations" name="Service Locations" parent="menu_fsm_config" action="fsm_location_action" sequence="30"/>
+    <menuitem id="menu_fsm_equipment" name="Equipment" parent="menu_fsm_config" action="fsm_equipment_action" sequence="35"/>
+    <menuitem id="menu_fsm_checklists" name="Checklist Templates" parent="menu_fsm_config" action="fsm_checklist_template_action" sequence="40"/>
+    <menuitem id="menu_fsm_maintenance" name="Preventive Maintenance Plans" parent="menu_fsm_config" action="fsm_maintenance_plan_action" sequence="50"/>
+    <menuitem id="menu_fsm_stages" name="Stages" parent="menu_fsm_config" action="fsm_stage_action" sequence="60"/>
+    <menuitem id="menu_fsm_tags" name="Tags" parent="menu_fsm_config" action="fsm_tag_action" sequence="70"/>
+    <menuitem id="menu_fsm_worksheets" name="Worksheet Templates" parent="menu_fsm_config" action="fsm_worksheet_template_action" sequence="80"/>
+    <menuitem id="menu_fsm_job_templates" name="Job Templates" parent="menu_fsm_config" action="fsm_order_template_action" sequence="85"/>
+    <menuitem id="menu_fsm_products" name="Products" parent="menu_fsm_config" action="fsm_product_action" sequence="90"/>
+    <menuitem id="menu_fsm_activity_plans" name="Activity Plans" parent="menu_fsm_config" action="mail_activity_plan_action_fsm" sequence="100"/>
+    <menuitem id="menu_fsm_activity_types" name="Activity Types" parent="menu_fsm_config" action="mail_activity_type_action_fsm" sequence="110"/>
+    <menuitem id="menu_fsm_skills" name="Skills" parent="menu_fsm_config" action="fsm_skill_action" sequence="120"/>
+</odoo>

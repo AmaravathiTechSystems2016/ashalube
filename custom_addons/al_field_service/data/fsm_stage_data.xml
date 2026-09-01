@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="stage_draft" model="fsm.stage">
+        <field name="name">New</field>
+        <field name="code">draft</field>
+        <field name="sequence">10</field>
+        <field name="fold" eval="False"/>
+    </record>
+    <record id="stage_planned" model="fsm.stage">
+        <field name="name">Planned</field>
+        <field name="code">planned</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="stage_in_progress" model="fsm.stage">
+        <field name="name">In Progress</field>
+        <field name="code">in_progress</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="stage_done" model="fsm.stage">
+        <field name="name">Done</field>
+        <field name="code">done</field>
+        <field name="sequence">40</field>
+        <field name="fold" eval="True"/>
+        <field name="is_closed" eval="True"/>
+    </record>
+    <record id="stage_cancelled" model="fsm.stage">
+        <field name="name">Cancelled</field>
+        <field name="code">cancelled</field>
+        <field name="sequence">50</field>
+        <field name="fold" eval="True"/>
+        <field name="is_closed" eval="True"/>
+    </record>
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fsm_team_view_list" model="ir.ui.view">
+        <field name="name">fsm.team.list</field>
+        <field name="model">fsm.team</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="manager_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="order_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="fsm_team_view_form" model="ir.ui.view">
+        <field name="name">fsm.team.form</field>
+        <field name="model">fsm.team</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_orders" type="object" class="oe_stat_button" icon="fa-wrench">
+                            <field name="order_count" widget="statinfo" string="Orders"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <field name="color" widget="color_picker"/>
+                        <h1 class="flex-grow-1"><field name="name" placeholder="Team name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="manager_id"/>
+                            <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="SLA &amp; Billing Policy" name="sla">
+                            <group>
+                                <group>
+                                    <field name="invoicing_policy"/>
+                                    <field name="escalation_user_id"/>
+                                </group>
+                                <group>
+                                    <field name="first_response_sla"/>
+                                    <field name="resolution_sla"/>
+                                    <field name="at_risk_ratio"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Members" name="members">
+                            <field name="member_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="skill_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" placeholder="Internal team notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="fsm_team_action" model="ir.actions.act_window">
+        <field name="name">Service Teams</field>
+        <field name="res_model">fsm.team</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

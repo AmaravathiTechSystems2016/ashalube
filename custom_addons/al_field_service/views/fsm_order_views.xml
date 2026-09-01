@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fsm_order_view_search" model="ir.ui.view">
+        <field name="name">fsm.order.search</field>
+        <field name="model">fsm.order</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="technician_ids"/>
+                <field name="supervisor_id"/>
+                <field name="project_id"/>
+                <field name="team_id"/>
+                <field name="tag_ids"/>
+                <filter string="Favorites" name="favorites" domain="[('favorite_user_ids', 'in', uid)]"/>
+                <filter string="My Tasks" name="my_tasks" domain="['|', ('technician_ids.user_id', '=', uid), ('supervisor_id.user_id', '=', uid)]"/>
+                <filter string="My Team" name="my_team" domain="[('team_id.member_ids.user_id', '=', uid)]"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Planned" name="planned" domain="[('state', '=', 'planned')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+                <filter string="Open" name="open" domain="[('state', 'not in', ['done', 'cancelled'])]"/>
+                <separator/>
+                <filter string="SLA Breached" name="sla_breached" domain="[('sla_status', '=', 'breached')]"/>
+                <filter string="At Risk" name="sla_risk" domain="[('sla_status', '=', 'at_risk')]"/>
+                <filter string="Emergency" name="emergency" domain="[('is_emergency', '=', True)]"/>
+                <filter string="Preventive" name="preventive" domain="[('is_preventive', '=', True)]"/>
+                <separator/>
+                <filter string="Planned Start" name="planned_date" date="planned_date_begin"/>
+                <group>
+                    <filter string="Stage" name="group_stage" context="{'group_by': 'stage_id'}"/>
+                    <filter string="Customer" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Team" name="group_team" context="{'group_by': 'team_id'}"/>
+                    <filter string="Supervisor" name="group_supervisor" context="{'group_by': 'supervisor_id'}"/>
+                    <filter string="Project" name="group_project" context="{'group_by': 'project_id'}"/>
+                    <filter string="SLA" name="group_sla" context="{'group_by': 'sla_status'}"/>
+                    <filter string="Planned Start" name="group_planned" context="{'group_by': 'planned_date_begin:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="fsm_order_view_list" model="ir.ui.view">
+        <field name="name">fsm.order.list</field>
+        <field name="model">fsm.order</field>
+        <field name="arch" type="xml">
+            <list class="o_fsm_order_list" decoration-danger="sla_status == 'breached'" decoration-warning="sla_status == 'at_risk'" default_order="priority desc, planned_date_begin">
+                <field name="is_favorite" widget="boolean_favorite" optional="show" nolabel="1" width="40px"/>
+                <field name="priority" widget="priority" optional="show" width="70px"/>
+                <field name="name"/>
+                <field name="project_id" optional="show"/>
+                <field name="technician_ids" widget="many2many_tags" optional="show"/>
+                <field name="supervisor_id" optional="show"/>
+                <field name="state" optional="hide"/>
+                <field name="stage_id"/>
+                <field name="partner_id"/>
+                <field name="planned_date_begin" optional="show"/>
+                <field name="planned_date_end" optional="hide"/>
+                <field name="spent_hours" sum="Spent Hours" widget="float_time"/>
+                <field name="progress" widget="progressbar" optional="show"/>
+                <field name="activity_ids" widget="list_activity" string="Next Activity" optional="show"/>
+                <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}" optional="hide"/>
+                <field name="sla_status" widget="badge"
+                    decoration-success="sla_status == 'on_track'"
+                    decoration-warning="sla_status == 'at_risk'"
+                    decoration-danger="sla_status == 'breached'"
+                    decoration-info="sla_status == 'none'"/>
+                <field name="total_amount" sum="Total" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="fsm_order_view_kanban" model="ir.ui.view">
+        <field name="name">fsm.order.kanban</field>
+        <field name="model">fsm.order</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" class="o_fsm_kanban" sample="1">
+                <field name="stage_id"/>
+                <field name="color"/>
+                <field name="priority"/>
+                <field name="is_favorite"/>
+                <field name="sla_status"/>
+                <field name="progress"/>
+                <field name="spent_hours"/>
+                <field name="allocated_hours"/>
+                <field name="next_activity_hint"/>
+                <field name="is_emergency"/>
+                <progressbar field="sla_status" colors="{&quot;breached&quot;: &quot;danger&quot;, &quot;at_risk&quot;: &quot;warning&quot;, &quot;on_track&quot;: &quot;success&quot;}"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_fsm_card">
+                            <div class="d-flex justify-content-between">
+                                <field name="is_favorite" widget="boolean_favorite"/>
+                                <field name="priority" widget="priority"/>
+                                <span t-if="record.is_emergency.raw_value" class="badge text-bg-danger">Emergency</span>
+                            </div>
+                            <strong><field name="name"/></strong>
+                            <div class="text-muted"><field name="partner_id"/></div>
+                            <div class="text-muted small"><field name="project_id"/></div>
+                            <div class="small"><field name="planned_date_begin"/></div>
+                            <div class="small">Supervisor: <field name="supervisor_id"/></div>
+                            <div class="d-flex align-items-center gap-2 mt-1">
+                                <field name="sla_status" widget="badge"
+                                    decoration-success="sla_status == 'on_track'"
+                                    decoration-warning="sla_status == 'at_risk'"
+                                    decoration-danger="sla_status == 'breached'"
+                                    decoration-muted="sla_status == 'none'"/>
+                                <span class="text-muted small" invisible="sla_status != 'none'" title="No SLA configured">i</span>
+                            </div>
+                            <field name="progress" widget="progressbar"/>
+                            <div class="small">
+                                <field name="spent_hours" widget="float_time"/> / <field name="allocated_hours" widget="float_time"/>
+                            </div>
+                            <div class="small text-muted" invisible="not next_activity_hint">Next: <field name="next_activity_hint"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="fsm_order_view_calendar" model="ir.ui.view">
+        <field name="name">fsm.order.calendar</field>
+        <field name="model">fsm.order</field>
+        <field name="arch" type="xml">
+            <calendar string="Planning" date_start="planned_date_begin" date_stop="planned_date_end" color="team_id" mode="week" event_open_popup="true" quick_create="0">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="technician_ids"/>
+                <field name="sla_status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="fsm_order_view_pivot" model="ir.ui.view">
+        <field name="name">fsm.order.pivot</field>
+        <field name="model">fsm.order</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="team_id" type="row"/>
+                <field name="state" type="col"/>
+                <field name="total_amount" type="measure"/>
+                <field name="spent_hours" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="fsm_order_view_graph" model="ir.ui.view">
+        <field name="name">fsm.order.graph</field>
+        <field name="model">fsm.order</field>
+        <field name="arch" type="xml">
+            <graph type="bar">
+                <field name="stage_id"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="fsm_order_view_form" model="ir.ui.view">
+        <field name="name">fsm.order.form</field>
+        <field name="model">fsm.order</field>
+        <field name="arch" type="xml">
+            <form class="o_fsm_order_form">
+                <header>
+                    <button name="action_plan" type="object" string="Plan" class="btn-secondary" invisible="state != 'draft'"/>
+                    <button name="action_start" type="object" string="Start" class="btn-primary" invisible="state not in ('draft', 'planned')"/>
+                    <button name="action_stop" type="object" string="Stop" invisible="not is_timer_running"/>
+                    <button name="action_mark_response" type="object" string="Mark Response" invisible="first_response_at"/>
+                    <button name="action_sign_report" type="object" string="Sign Report" invisible="state == 'cancelled'"/>
+                    <button name="action_create_quotation" type="object" string="Create/Update SO" invisible="state == 'cancelled'"/>
+                    <button name="action_create_invoice" type="object" string="Create Invoice" class="btn-primary" invisible="state == 'cancelled'"/>
+                    <button name="action_add_from_catalog" type="object" string="Products" class="btn-secondary" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_create_delivery" type="object" string="Create Delivery" invisible="state in ('draft', 'cancelled')"/>
+                    <button name="action_navigate" type="object" string="Navigate to" invisible="state == 'cancelled'"/>
+                    <button name="action_mark_done" type="object" string="Mark Done" class="btn-primary" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft" invisible="state not in ('done', 'cancelled')"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('done', 'cancelled')"/>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_attachments" type="object" class="oe_stat_button" icon="fa-files-o">
+                            <field name="message_attachment_count" widget="statinfo" string="Documents"/>
+                        </button>
+                        <button name="action_print_worksheet" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text" invisible="is_worksheet_complete">Worksheet</span>
+                                <span class="o_stat_text text-success" invisible="not is_worksheet_complete">Worksheet Complete</span>
+                            </div>
+                        </button>
+                        <button name="action_add_from_catalog" type="object" class="oe_stat_button" icon="fa-th-large" invisible="state in ('done', 'cancelled')">
+                            <field name="material_count" widget="statinfo" string="Products"/>
+                        </button>
+                        <button name="action_customer_preview" type="object" class="oe_stat_button" icon="fa-globe">
+                            <div class="o_stat_info"><span class="o_stat_text">Customer Preview</span></div>
+                        </button>
+                        <button name="action_view_sale" type="object" class="oe_stat_button" icon="fa-usd" invisible="not sale_id">
+                            <div class="o_stat_info"><span class="o_stat_text">Sales Order</span></div>
+                        </button>
+                        <button name="action_view_pickings" type="object" class="oe_stat_button" icon="fa-truck" invisible="not picking_count">
+                            <field name="picking_count" widget="statinfo" string="Deliveries"/>
+                        </button>
+                        <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-pencil-square-o" invisible="not invoice_count">
+                            <field name="invoice_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                        <button name="action_view_children" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="child_count" widget="statinfo" string="Sub-tasks"/>
+                        </button>
+                        <button name="action_open_map" type="object" class="oe_stat_button" icon="fa-map-marker">
+                            <div class="o_stat_info"><span class="o_stat_text">Map</span></div>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="SLA Breached" bg_color="text-bg-danger" invisible="sla_status != 'breached'"/>
+                    <widget name="web_ribbon" title="Timer" bg_color="text-bg-info" invisible="not is_timer_running"/>
+                    <div class="oe_title d-flex align-items-center gap-3">
+                        <field name="is_favorite" widget="boolean_favorite" nolabel="1"/>
+                        <h1 class="flex-grow-1"><field name="name" placeholder="Work order title"/></h1>
+                        <field name="priority" widget="priority"/>
+                        <div class="o_fsm_timer badge text-bg-info fs-6" invisible="not is_timer_running">
+                            Timer <field name="timer_elapsed" widget="float_time" class="oe_inline"/>
+                        </div>
+                        <div class="o_fsm_amount">
+                            <field name="total_amount" widget="monetary" class="oe_inline"/>
+                        </div>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not skill_warning">
+                        <field name="skill_warning"/>
+                    </div>
+                    <group>
+                        <group string="Service Info">
+                            <field name="template_id"/>
+                            <field name="team_id"/>
+                            <field name="project_id"/>
+                            <field name="stage_id" invisible="1"/>
+                            <field name="state" invisible="1"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="skill_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field name="supervisor_id"/>
+                            <field name="technician_ids" widget="many2many_tags"/>
+                            <field name="is_preventive"/>
+                            <field name="is_emergency"/>
+                            <field name="job_type"/>
+                            <field name="source"/>
+                            <field name="maintenance_plan_id" invisible="not is_preventive"/>
+                            <field name="equipment_id"/>
+                            <field name="serial_number" placeholder="Scan or type serial"/>
+                            <field name="model_number"/>
+                            <field name="manufacturer"/>
+                            <field name="warranty_type" invisible="job_type != 'install'"/>
+                            <field name="warranty_months" invisible="job_type != 'install'"/>
+                            <field name="installation_id" invisible="not installation_id"/>
+                            <field name="checklist_template_id"/>
+                            <field name="worksheet_template_id"/>
+                            <field name="activity_plan_id"/>
+                            <field name="sale_line_id"/>
+                            <field name="requested_date"/>
+                            <field name="planned_date_begin"/>
+                            <field name="planned_date_end"/>
+                            <field name="allocated_hours" widget="float_time"/>
+                            <field name="spent_hours" widget="float_time"/>
+                            <field name="remaining_hours" widget="float_time"/>
+                            <field name="duration_hours" widget="float_time"/>
+                            <field name="travel_hours" widget="float_time"/>
+                            <field name="actual_date_begin"/>
+                            <field name="actual_date_end"/>
+                            <field name="is_timer_running" invisible="1"/>
+                            <field name="is_worksheet_complete" invisible="1"/>
+                            <field name="timer_elapsed" widget="float_time" invisible="not is_timer_running"/>
+                        </group>
+                        <group string="Customer">
+                            <field name="partner_id"/>
+                            <field name="location_id"/>
+                            <field name="contact_id"/>
+                            <field name="phone" widget="phone"/>
+                            <field name="email" widget="email"/>
+                            <field name="customer_po"/>
+                            <field name="preferred_window_start"/>
+                            <field name="preferred_window_end"/>
+                            <field name="sla_status" widget="badge"
+                                decoration-success="sla_status == 'on_track'"
+                                decoration-warning="sla_status == 'at_risk'"
+                                decoration-danger="sla_status == 'breached'"
+                                decoration-info="sla_status == 'none'"/>
+                            <field name="first_response_at"/>
+                            <field name="response_deadline"/>
+                            <field name="resolution_deadline"/>
+                            <field name="is_escalated"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="parent_id"/>
+                            <field name="lead_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Work Details" name="work">
+                            <separator string="Issue details and service request"/>
+                            <field name="description" placeholder="Issue details and service request..."/>
+                            <separator string="Work performed and resolution notes"/>
+                            <field name="resolution_notes" placeholder="Work performed and resolution notes..."/>
+                        </page>
+                        <page string="Worksheet" name="worksheet">
+                            <field name="worksheet_html"/>
+                        </page>
+                        <page string="Collected info" name="collected">
+                            <separator string="Installation / site capture"/>
+                            <group>
+                                <field name="serial_number"/>
+                                <field name="model_number"/>
+                                <field name="manufacturer"/>
+                            </group>
+                            <field name="collected_notes" placeholder="Readings, site conditions, customer remarks, commissioning notes..."/>
+                            <separator string="Photos"/>
+                            <field name="photo_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="image" widget="image" options="{'size': [64, 64]}"/>
+                                    <field name="captured_on"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Timesheets" name="timesheets">
+                            <group>
+                                <group>
+                                    <field name="allocated_hours" widget="float_time"/>
+                                    <field name="spent_hours" widget="float_time"/>
+                                    <field name="remaining_hours" widget="float_time"/>
+                                </group>
+                            </group>
+                            <field name="timesheet_ids">
+                                <list editable="bottom">
+                                    <field name="date"/>
+                                    <field name="employee_id"/>
+                                    <field name="description"/>
+                                    <field name="hours" sum="Hours" widget="float_time"/>
+                                    <field name="hourly_cost"/>
+                                    <field name="total_cost" sum="Total Cost"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Sub-tasks" name="subtasks">
+                            <field name="child_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="stage_id"/>
+                                    <field name="technician_ids" widget="many2many_tags"/>
+                                    <field name="planned_date_begin"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Materials" name="materials">
+                            <field name="material_line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="name"/>
+                                    <field name="product_uom_qty" sum="Qty"/>
+                                    <field name="product_uom_id"/>
+                                    <field name="price_unit"/>
+                                    <field name="price_subtotal" sum="Subtotal"/>
+                                    <field name="currency_id" column_invisible="True"/>
+                                </list>
+                            </field>
+                            <button name="action_add_from_catalog" type="object" string="Add from Catalog" class="btn-secondary" invisible="state in ('done', 'cancelled')"/>
+                            <group>
+                                <group>
+                                    <field name="warehouse_id"/>
+                                    <field name="van_location_id"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Checklist" name="checklist">
+                            <field name="checklist_line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="is_mandatory"/>
+                                    <field name="is_done"/>
+                                    <field name="note"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Customer Sign Off" name="sign">
+                            <group>
+                                <field name="signed_by"/>
+                                <field name="signature" widget="signature"/>
+                                <field name="signed_on"/>
+                                <field name="signature_confirmed"/>
+                            </group>
+                            <button name="action_confirm_signature" type="object" string="Confirm Signature" class="btn-primary"/>
+                            <separator string="Technician signature"/>
+                            <group>
+                                <field name="technician_signed_by"/>
+                                <field name="technician_signature" widget="signature"/>
+                                <field name="technician_signed_on"/>
+                            </group>
+                            <button name="action_confirm_technician_signature" type="object" string="Confirm Technician Signature" class="btn-secondary"/>
+                        </page>
+                        <page string="Sales &amp; Billing" name="billing">
+                            <group>
+                                <group>
+                                    <field name="service_product_id"/>
+                                    <field name="service_qty"/>
+                                    <field name="sale_id"/>
+                                    <field name="so_policy"/>
+                                </group>
+                                <group>
+                                    <field name="labor_amount"/>
+                                    <field name="material_amount"/>
+                                    <field name="total_amount"/>
+                                </group>
+                            </group>
+                            <button name="action_create_quotation" type="object" string="Create/Update SO" class="btn-primary"/>
+                        </page>
+                        <page string="Extra Info" name="extra">
+                            <group>
+                                <group string="Dispatch">
+                                    <field name="rating_request"/>
+                                    <field name="calendar_event_id"/>
+                                    <field name="warehouse_id"/>
+                                    <field name="van_location_id"/>
+                                    <field name="travel_hours" widget="float_time"/>
+                                    <field name="preferred_window_start"/>
+                                    <field name="preferred_window_end"/>
+                                </group>
+                                <group string="Origin">
+                                    <field name="source"/>
+                                    <field name="lead_id"/>
+                                    <field name="sale_id"/>
+                                    <field name="sale_line_id"/>
+                                    <field name="parent_id"/>
+                                    <field name="company_id" groups="base.group_multi_company"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="fsm_order_action" model="ir.actions.act_window">
+        <field name="name">All Tasks</field>
+        <field name="res_model">fsm.order</field>
+        <field name="view_mode">list,kanban,calendar,pivot,graph,form</field>
+        <field name="context">{'search_default_open': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a work order</p>
+            <p>Plan technicians, capture time and materials, get a signature and invoice.</p>
+        </field>
+    </record>
+    <record id="fsm_order_action_my" model="ir.actions.act_window">
+        <field name="name">My Tasks</field>
+        <field name="res_model">fsm.order</field>
+        <field name="view_mode">kanban,list,calendar,form</field>
+        <field name="context">{'search_default_my_tasks': 1}</field>
+    </record>
+    <record id="fsm_order_action_planning" model="ir.actions.act_window">
+        <field name="name">Planning</field>
+        <field name="res_model">fsm.order</field>
+        <field name="view_mode">calendar,list,pivot,form</field>
+        <field name="domain">[('planned_date_begin', '!=', False)]</field>
+    </record>
+    <record id="fsm_gantt_action" model="ir.actions.client">
+        <field name="name">Gantt</field>
+        <field name="tag">al_field_service.fsm_gantt</field>
+    </record>
+    <record id="fsm_map_action" model="ir.actions.client">
+        <field name="name">Map</field>
+        <field name="tag">al_field_service.fsm_map</field>
+    </record>
+    <record id="fsm_order_action_itinerary" model="ir.actions.server">
+        <field name="name">View itinerary in Google Maps</field>
+        <field name="model_id" ref="model_fsm_order"/>
+        <field name="binding_model_id" ref="model_fsm_order"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">action = records.action_google_itinerary()</field>
+    </record>
+    <record id="fsm_order_action_report" model="ir.actions.act_window">
+        <field name="name">Work Order Analysis</field>
+        <field name="res_model">fsm.order</field>
+        <field name="view_mode">pivot,graph,list</field>
+        <field name="context">{'search_default_group_stage': 1}</field>
+    </record>
+</odoo>

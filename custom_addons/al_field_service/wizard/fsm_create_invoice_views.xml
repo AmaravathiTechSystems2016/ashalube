@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="fsm_create_invoice_view_form" model="ir.ui.view">
+        <field name="name">fsm.create.invoice.form</field>
+        <field name="model">fsm.create.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Create Invoice">
+                <group>
+                    <field name="order_id" readonly="1"/>
+                    <field name="sale_id" readonly="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="advance_payment_method" widget="radio"/>
+                    <field name="amount" invisible="advance_payment_method != 'percentage'" required="advance_payment_method == 'percentage'"/>
+                    <field name="fixed_amount" invisible="advance_payment_method != 'fixed'" required="advance_payment_method == 'fixed'"/>
+                    <field name="deduct_down_payments"/>
+                </group>
+                <footer>
+                    <button name="action_create_invoices" type="object" string="Create Draft" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

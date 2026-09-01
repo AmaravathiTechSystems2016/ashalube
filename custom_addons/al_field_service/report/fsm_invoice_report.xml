@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_invoice_document_fsm" inherit_id="account.report_invoice_document">
+        <xpath expr="//table[hasclass('o_has_total_table')]" position="before">
+            <t t-if="o.fsm_order_id">
+                <p><strong>Source:</strong> <span t-field="o.fsm_order_id"/></p>
+            </t>
+        </xpath>
+        <xpath expr="//div[@id='total']" position="before">
+            <t t-set="fsm_mat" t-value="o._get_fsm_material_lines()"/>
+            <t t-set="fsm_lab" t-value="o._get_fsm_labor_lines()"/>
+            <t t-if="fsm_mat or fsm_lab">
+                <h5 t-if="fsm_mat">Materials and products</h5>
+                <table t-if="fsm_mat" class="table table-sm o_main_table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th class="text-end">Qty</th>
+                            <th class="text-end">Unit Price</th>
+                            <th class="text-end">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="fsm_mat" t-as="line">
+                            <td t-field="line.name"/>
+                            <td class="text-end" t-field="line.quantity"/>
+                            <td class="text-end" t-field="line.price_unit"/>
+                            <td class="text-end" t-field="line.price_subtotal"/>
+                        </tr>
+                    </tbody>
+                </table>
+                <h5 t-if="fsm_lab">Technician labor</h5>
+                <table t-if="fsm_lab" class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Technician</th>
+                            <th>Work Description</th>
+                            <th class="text-end">Hours</th>
+                            <th class="text-end">Rate</th>
+                            <th class="text-end">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="fsm_lab" t-as="line">
+                            <td t-field="line.fsm_employee_id"/>
+                            <td t-field="line.name"/>
+                            <td class="text-end" t-field="line.quantity"/>
+                            <td class="text-end" t-field="line.price_unit"/>
+                            <td class="text-end" t-field="line.price_subtotal"/>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="mb-3">
+                    <div>Total Amount Material: <span t-esc="sum(fsm_mat.mapped('price_subtotal'))"/></div>
+                    <div>Total Amount Employee Labor: <span t-esc="sum(fsm_lab.mapped('price_subtotal'))"/></div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

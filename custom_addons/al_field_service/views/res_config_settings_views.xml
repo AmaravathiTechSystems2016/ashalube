@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_fsm" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.fsm</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Field Service" string="Field Service" name="al_field_service" groups="al_field_service.group_fsm_manager">
+                    <block title="Defaults" name="fsm_defaults">
+                        <setting string="Default Field Service Project" help="Used when creating jobs from CRM or Sales.">
+                            <field name="fsm_default_project_id"/>
+                        </setting>
+                        <setting string="Default Labor Product" help="Service product billed for technician hours.">
+                            <field name="fsm_labor_product_id"/>
+                        </setting>
+                        <setting string="Materials / Timesheets → Sales Order" help="Manual: create quotation from the job. Automatic: keep the quotation in sync.">
+                            <field name="fsm_so_policy"/>
+                        </setting>
+                        <setting string="Require signature to close">
+                            <field name="fsm_require_signature"/>
+                        </setting>
+                        <setting string="Require mandatory checklist to close">
+                            <field name="fsm_require_checklist"/>
+                        </setting>
+                        <setting string="Invoice on Mark Done" help="Create a customer invoice automatically when the technician completes the job.">
+                            <field name="fsm_auto_invoice_on_done"/>
+                        </setting>
+                    </block>
+                    <block title="Automated emails" name="fsm_mail">
+                        <setting string="Email when technician is assigned">
+                            <field name="fsm_mail_assigned"/>
+                        </setting>
+                        <setting string="Email when visit is planned">
+                            <field name="fsm_mail_planned"/>
+                        </setting>
+                        <setting string="Email when job starts">
+                            <field name="fsm_mail_started"/>
+                        </setting>
+                        <setting string="Email when job is completed">
+                            <field name="fsm_mail_done"/>
+                        </setting>
+                        <setting string="Email installation record to customer">
+                            <field name="fsm_mail_installation"/>
+                        </setting>
+                        <setting string="Warranty reminder (days before expiry)">
+                            <field name="fsm_warranty_reminder_days"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_fsm_config_settings" model="ir.actions.act_window">
+        <field name="name">Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'module': 'al_field_service'}</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

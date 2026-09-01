@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ir_cron_fsm_sla" model="ir.cron">
+        <field name="name">Field Service: SLA status and escalation</field>
+        <field name="model_id" ref="model_fsm_order"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_update_sla()</field>
+        <field name="interval_number">15</field>
+        <field name="interval_type">minutes</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_fsm_maintenance" model="ir.cron">
+        <field name="name">Field Service: Generate preventive work orders</field>
+        <field name="model_id" ref="model_fsm_maintenance_plan"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_generate_orders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="ir_cron_fsm_warranty" model="ir.cron">
+        <field name="name">Field Service: Warranty expiry reminders</field>
+        <field name="model_id" ref="model_fsm_equipment"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_warranty_reminder()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

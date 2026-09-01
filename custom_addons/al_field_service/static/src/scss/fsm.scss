@@ -1,0 +1,82 @@
+.o_fsm_order_form .o_fsm_amount {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #1b4f72;
+}
+.o_fsm_kanban .o_fsm_card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+.o_fsm_order_list .o_data_row {
+    font-size: 0.95rem;
+}
+.o_fsm_order_form header .btn-primary {
+    min-width: 7rem;
+}
+.o_fsm_gantt_grid {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+.o_fsm_gantt_head,
+.o_fsm_gantt_row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    min-height: 44px;
+    border-bottom: 1px solid #eef1f4;
+}
+.o_fsm_gantt_label {
+    padding: 0.5rem 0.75rem;
+    font-weight: 600;
+    background: #f8fafc;
+}
+.o_fsm_gantt_days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+.o_fsm_gantt_day {
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #5f6c7b;
+    border-left: 1px solid #eef1f4;
+}
+.o_fsm_gantt_track {
+    position: relative;
+    min-height: 52px;
+    background-image: repeating-linear-gradient(to right, transparent, transparent calc(100% / 7 - 1px), #eef1f4 calc(100% / 7));
+}
+.o_fsm_gantt_bar {
+    position: absolute;
+    top: 10px;
+    height: 32px;
+    border-radius: 6px;
+    background: #1b4f72;
+    color: #fff;
+    font-size: 0.75rem;
+    line-height: 32px;
+    padding: 0 8px;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.o_fsm_gantt_bar.in_progress { background: #0d6efd; }
+.o_fsm_gantt_bar.done { background: #198754; }
+.o_fsm_gantt_bar.planned { background: #1b4f72; }
+.o_fsm_map {
+    min-height: calc(100vh - 140px);
+}
+.o_fsm_map_list {
+    width: 320px;
+    overflow: auto;
+    background: #fff;
+}
+.o_fsm_map_item {
+    cursor: pointer;
+}
+.o_fsm_map_item:hover {
+    background: #f4f7fb;
+}
+

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_fsm_worksheet" model="ir.actions.report">
+        <field name="name">Worksheet</field>
+        <field name="model">fsm.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">al_field_service.report_fsm_worksheet</field>
+        <field name="report_file">al_field_service.report_fsm_worksheet</field>
+        <field name="print_report_name">'Worksheet - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_fsm_order"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_fsm_worksheet_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Worksheet</h2>
+                <div t-field="doc.worksheet_html"/>
+                <t t-if="doc.signature">
+                    <h4>Customer Signature</h4>
+                    <p>Signed By: <span t-field="doc.signed_by"/></p>
+                    <p>Signed On: <span t-field="doc.signed_on"/></p>
+                    <img t-att-src="image_data_uri(doc.signature)" style="max-height:80px;"/>
+                </t>
+                <t t-if="doc.technician_signature">
+                    <h4>Technician Signature</h4>
+                    <p>Signed By: <span t-field="doc.technician_signed_by"/></p>
+                    <p>Signed On: <span t-field="doc.technician_signed_on"/></p>
+                    <img t-att-src="image_data_uri(doc.technician_signature)" style="max-height:80px;"/>
+                </t>
+            </div>
+        </t>
+    </template>
+    <template id="report_fsm_worksheet">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="al_field_service.report_fsm_worksheet_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>
