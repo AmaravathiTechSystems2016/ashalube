@@ -45,7 +45,6 @@ export class FsmGanttAction extends Component {
     onBarClick(ev) {
         const id = Number(ev.currentTarget.dataset.id);
         this.openOrder(id);
-    }
         this.action.doAction({
             type: "ir.actions.act_window",
             res_model: "fsm.order",
