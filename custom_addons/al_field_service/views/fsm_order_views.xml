@@ -170,7 +170,7 @@
                     <button name="action_sign_report" type="object" string="Sign Report" invisible="state == 'cancelled'"/>
                     <button name="action_create_quotation" type="object" string="Create/Update SO" invisible="state == 'cancelled'"/>
                     <button name="action_create_invoice" type="object" string="Create Invoice" class="btn-primary" invisible="state == 'cancelled'"/>
-                    <button name="action_add_from_catalog" type="object" string="Products" class="btn-secondary" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_add_from_catalog" type="object" string="Products" class="btn-secondary" invisible="state in ('done', 'cancelled')" context="{'order_id': id}"/>
                     <button name="action_create_delivery" type="object" string="Create Delivery" invisible="state in ('draft', 'cancelled')"/>
                     <button name="action_navigate" type="object" string="Navigate to" invisible="state == 'cancelled'"/>
                     <button name="action_mark_done" type="object" string="Mark Done" class="btn-primary" invisible="state in ('done', 'cancelled')"/>
@@ -189,7 +189,7 @@
                                 <span class="o_stat_text text-success" invisible="not is_worksheet_complete">Worksheet Complete</span>
                             </div>
                         </button>
-                        <button name="action_add_from_catalog" type="object" class="oe_stat_button" icon="fa-th-large" invisible="state in ('done', 'cancelled')">
+                        <button name="action_add_from_catalog" type="object" class="oe_stat_button" icon="fa-th-large" invisible="state in ('done', 'cancelled')" context="{'order_id': id}">
                             <field name="material_count" widget="statinfo" string="Products"/>
                         </button>
                         <button name="action_customer_preview" type="object" class="oe_stat_button" icon="fa-globe">
@@ -361,7 +361,7 @@
                                     <field name="currency_id" column_invisible="True"/>
                                 </list>
                             </field>
-                            <button name="action_add_from_catalog" type="object" string="Add from Catalog" class="btn-secondary" invisible="state in ('done', 'cancelled')"/>
+                            <button name="action_add_from_catalog" type="object" string="Add from Catalog" class="btn-secondary" invisible="state in ('done', 'cancelled')" context="{'order_id': id}"/>
                             <group>
                                 <group>
                                     <field name="warehouse_id"/>
