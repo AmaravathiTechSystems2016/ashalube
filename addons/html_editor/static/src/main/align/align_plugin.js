@@ -69,21 +69,30 @@ export class AlignPlugin extends Plugin {
         has_format_predicates: (node) => closestBlock(node)?.style.textAlign,
     };
 
+    // Created at construct time so selectionchange cannot run before setup().
+    alignment = reactive({ displayName: "" });
+
     setup() {
-        this.alignment = reactive({ displayName: "" });
+        this.alignment = this.alignment || reactive({ displayName: "" });
         this.canSetAlignmentMemoized = weakMemoize(
             (selection) => isHtmlContentSupported(selection) && this.getBlocksToAlign().length > 0
         );
     }
 
     get alignmentMode() {
-        const sel = this.dependencies.selection.getSelectionData().deepEditableSelection;
+        const sel = this.dependencies.selection.getSelectionData()?.deepEditableSelection;
         const block = closestBlock(sel?.anchorNode);
+        if (!block || block.nodeType !== 1) {
+            return "left";
+        }
         const textAlign = this.getTextAlignment(block);
         return ["center", "right", "justify"].includes(textAlign) ? textAlign : "left";
     }
 
     getTextAlignment(block) {
+        if (!block || block.nodeType !== 1) {
+            return "left";
+        }
         const { direction, textAlign } = getComputedStyle(block);
         if (textAlign === "start") {
             return direction === "rtl" ? "right" : "left";
@@ -127,10 +136,16 @@ export class AlignPlugin extends Plugin {
     }
 
     canSetAlignment(selection) {
+        if (!this.canSetAlignmentMemoized) {
+            return false;
+        }
         return this.canSetAlignmentMemoized(selection);
     }
 
     updateAlignmentParams() {
+        if (!this.alignment) {
+            this.alignment = reactive({ displayName: "" });
+        }
         this.alignment.displayName = this.alignmentMode;
     }
 }

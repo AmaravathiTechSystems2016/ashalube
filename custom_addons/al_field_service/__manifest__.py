@@ -1,6 +1,6 @@
 {
     'name': 'Aasha Field Service',
-    'version': '19.0.1.2.0',
+    'version': '19.0.1.2.1',
     'category': 'Services/Field Service',
     'summary': 'Work orders, SLA, checklists, materials, timesheets, sign-off and billing',
     'description': """
@@ -34,6 +34,7 @@ Contacts and Accounting without replacing core models.
         'portal',
         'rating',
         'analytic',
+        'html_editor',
     ],
     'data': [
         'security/fsm_security.xml',
@@ -78,6 +79,7 @@ Contacts and Accounting without replacing core models.
     'assets': {
         'web.assets_backend': [
             'al_field_service/static/src/scss/fsm.scss',
+            'al_field_service/static/src/js/html_editor_align_fix.js',
             'al_field_service/static/src/js/fsm_gantt.js',
             'al_field_service/static/src/js/fsm_map.js',
             'al_field_service/static/src/xml/fsm_gantt.xml',

@@ -69,8 +69,10 @@ export class TableAlignPlugin extends Plugin {
         has_format_predicates: (node) => closestElement(node, "td, th")?.style.verticalAlign,
     };
 
+    verticalAlignMode = reactive({ displayName: "" });
+
     setup() {
-        this.verticalAlignMode = reactive({ displayName: "" });
+        this.verticalAlignMode = this.verticalAlignMode || reactive({ displayName: "" });
     }
 
     get currentVerticalAlign() {
@@ -113,6 +115,9 @@ export class TableAlignPlugin extends Plugin {
     }
 
     updateVerticalAlignParams() {
+        if (!this.verticalAlignMode) {
+            this.verticalAlignMode = reactive({ displayName: "" });
+        }
         this.verticalAlignMode.displayName = this.currentVerticalAlign;
     }
 }
