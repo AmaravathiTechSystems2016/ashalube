@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.form.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[field[@name='lead_properties']]" position="before">
+                <group name="al_item_value" string="Quantity and Value">
+                    <group>
+                        <field name="company_currency" invisible="1"/>
+                        <field name="al_enquiry_date"/>
+                        <field name="al_quantity"/>
+                        <field name="al_rate" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    </group>
+                    <group>
+                        <field name="al_value" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="quick_create_opportunity_form_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.form.quick.create.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='expected_revenue']/ancestor::div[contains(@class, 'd-flex')][1]" position="after">
+                <div class="d-flex align-items-center" colspan="2">
+                    <i class="fa fa-calendar" title="Enquiry Date"/>
+                    <field name="al_enquiry_date" class="oe_inline o_field_highlight w-100 mb-0" placeholder="Enquiry Date"/>
+                </div>
+                <div class="d-flex align-items-center" colspan="2">
+                    <field name="company_currency" invisible="1"/>
+                    <field name="al_quantity" class="oe_inline o_field_highlight mb-0" placeholder="Quantity"/>
+                    <span class="opacity-50 p-2">x</span>
+                    <field name="al_rate" class="oe_inline o_field_highlight mb-0" widget="monetary" options="{'currency_field': 'company_currency'}" placeholder="Rate"/>
+                    <span class="opacity-50 p-2">=</span>
+                    <field name="al_value" class="oe_inline mb-0" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_leads_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.list.lead.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <field name="priority" position="before">
+                <field name="company_currency" column_invisible="True"/>
+                <field name="al_enquiry_date" optional="show"/>
+                <field name="al_quantity" optional="show"/>
+                <field name="al_rate" optional="show" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                <field name="al_value" optional="show" sum="Value" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="crm_case_tree_view_oppor_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.list.opportunity.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <field name="expected_revenue" position="after">
+                <field name="al_enquiry_date" optional="show"/>
+                <field name="al_quantity" optional="show"/>
+                <field name="al_rate" optional="show" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                <field name="al_value" optional="show" sum="Value" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="crm_case_kanban_view_leads_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_kanban_card_crm_lead_revenue')]" position="after">
+                <div invisible="not al_value">
+                    <field name="al_quantity"/>
+                    <span class="mx-1">x</span>
+                    <field name="al_rate" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    <span class="mx-1">=</span>
+                    <field name="al_value" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_lead_kanban_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.mobile.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_lead_kanban"/>
+        <field name="arch" type="xml">
+            <field name="contact_name" position="after">
+                <field name="company_currency" invisible="1"/>
+                <div invisible="not al_value">
+                    <field name="al_quantity"/>
+                    <span class="mx-1">x</span>
+                    <field name="al_rate" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                    <span class="mx-1">=</span>
+                    <field name="al_value" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                </div>
+            </field>
+        </field>
+    </record>
+
+    <record id="crm_case_calendar_view_leads_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.calendar.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_calendar_view_leads"/>
+        <field name="arch" type="xml">
+            <field name="expected_revenue" position="after">
+                <field name="al_quantity"/>
+                <field name="al_rate"/>
+                <field name="al_value"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_pivot_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.pivot.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_pivot"/>
+        <field name="arch" type="xml">
+            <field name="expected_revenue" position="after">
+                <field name="al_quantity" type="measure"/>
+                <field name="al_rate" type="measure"/>
+                <field name="al_value" type="measure"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_graph_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.graph.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_graph"/>
+        <field name="arch" type="xml">
+            <field name="stage_id" position="before">
+                <field name="al_quantity" type="measure"/>
+                <field name="al_rate" type="measure"/>
+                <field name="al_value" type="measure"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_pivot_forecast_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.pivot.forecast.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_pivot_forecast"/>
+        <field name="arch" type="xml">
+            <field name="prorated_revenue" position="after">
+                <field name="al_quantity" type="measure"/>
+                <field name="al_rate" type="measure"/>
+                <field name="al_value" type="measure"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_graph_forecast_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.graph.forecast.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_graph_forecast"/>
+        <field name="arch" type="xml">
+            <field name="prorated_revenue" position="after">
+                <field name="al_quantity" type="measure"/>
+                <field name="al_rate" type="measure"/>
+                <field name="al_value" type="measure"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_crm_case_leads_filter_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.search.lead.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="al_enquiry_date"/>
+                <field name="al_quantity"/>
+                <field name="al_rate"/>
+                <field name="al_value"/>
+            </field>
+            <filter name="filter_creation_date" position="after">
+                <filter string="Enquiry Date" name="filter_enquiry_date" date="al_enquiry_date"/>
+            </filter>
+            <filter name="month" position="before">
+                <filter name="group_enquiry_date" string="Enquiry Date" context="{'group_by': 'al_enquiry_date'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_crm_case_opportunities_filter_item_value" model="ir.ui.view">
+        <field name="name">crm.lead.search.opportunity.item.value</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="al_enquiry_date"/>
+                <field name="al_quantity"/>
+                <field name="al_rate"/>
+                <field name="al_value"/>
+            </field>
+            <filter name="creation_date" position="after">
+                <filter string="Enquiry Date" name="filter_enquiry_date" date="al_enquiry_date"/>
+            </filter>
+            <filter name="month" position="before">
+                <filter name="group_enquiry_date" string="Enquiry Date" context="{'group_by': 'al_enquiry_date'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_crm_case_leads_filter_dashboard" model="ir.ui.view">
+        <field name="name">crm.lead.search.lead.dashboard</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <filter name="month" position="before">
+                <filter name="group_stage" string="Stage" context="{'group_by': 'stage_id'}"/>
+                <filter name="group_tag" string="Tag" context="{'group_by': 'tag_ids'}"/>
+                <filter name="group_lost_reason" string="Lost Reason" context="{'group_by': 'lost_reason_id'}"/>
+                <filter name="group_won_status" string="Won/Lost" context="{'group_by': 'won_status'}"/>
+            </filter>
+        </field>
+    </record>
+
+    <record id="view_crm_case_opportunities_filter_dashboard" model="ir.ui.view">
+        <field name="name">crm.lead.search.opportunity.dashboard</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <filter name="stage" position="after">
+                <filter name="group_tag" string="Tag" context="{'group_by': 'tag_ids'}"/>
+                <filter name="group_won_status" string="Won/Lost" context="{'group_by': 'won_status'}"/>
+            </filter>
+        </field>
+    </record>
+</odoo>

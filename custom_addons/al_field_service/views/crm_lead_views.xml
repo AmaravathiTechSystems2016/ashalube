@@ -15,4 +15,15 @@
             </xpath>
         </field>
     </record>
+
+    <record id="crm_case_calendar_view_leads_all_activities" model="ir.ui.view">
+        <field name="name">crm.lead.calendar.all.activities</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_calendar_view_leads"/>
+        <field name="arch" type="xml">
+            <calendar position="attributes">
+                <attribute name="js_class">all_activities_calendar</attribute>
+            </calendar>
+        </field>
+    </record>
 </odoo>

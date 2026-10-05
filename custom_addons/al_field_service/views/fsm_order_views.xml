@@ -124,7 +124,7 @@
         <field name="name">fsm.order.calendar</field>
         <field name="model">fsm.order</field>
         <field name="arch" type="xml">
-            <calendar string="Planning" date_start="planned_date_begin" date_stop="planned_date_end" color="team_id" mode="week" event_open_popup="true" quick_create="0">
+            <calendar string="Planning" date_start="planned_date_begin" date_stop="planned_date_end" color="team_id" mode="week" event_open_popup="true" quick_create="0" js_class="all_activities_calendar">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="technician_ids"/>

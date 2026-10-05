@@ -80,6 +80,7 @@ Contacts and Accounting without replacing core models.
         'web.assets_backend': [
             'al_field_service/static/src/scss/fsm.scss',
             'al_field_service/static/src/js/html_editor_align_fix.js',
+            'al_field_service/static/src/js/all_activities_calendar.js',
             'al_field_service/static/src/js/fsm_gantt.js',
             'al_field_service/static/src/js/fsm_map.js',
             'al_field_service/static/src/xml/fsm_gantt.xml',

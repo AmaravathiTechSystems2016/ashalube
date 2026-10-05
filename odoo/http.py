@@ -142,6 +142,7 @@ import json
 import logging
 import mimetypes
 import os
+import posixpath
 import re
 import threading
 import time
@@ -2734,7 +2735,9 @@ class Application:
         """
 
         netloc, path = urlparse(url)[1:3]
-        path = os.path.normpath(os.path.normcase(path))
+        # URL paths always use '/'. os.path.normpath on Windows rewrites
+        # them to backslashes, so the split below never finds /static/.
+        path = posixpath.normpath(path)
         try:
             path_netloc, module, static, resource = path.split('/', 3)
         except ValueError:

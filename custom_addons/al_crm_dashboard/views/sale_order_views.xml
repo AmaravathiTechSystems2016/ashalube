@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sales_order_filter_crm_dashboard" model="ir.ui.view">
+        <field name="name">sale.order.search.crm.dashboard</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sales_order_filter"/>
+        <field name="arch" type="xml">
+            <filter name="preferred_payment_method_line_groupby" position="after">
+                <filter name="group_team" string="Sales Team" context="{'group_by': 'team_id'}"/>
+                <filter name="group_opportunity" string="Opportunity" context="{'group_by': 'opportunity_id'}"/>
+                <filter name="group_campaign" string="Campaign" context="{'group_by': 'campaign_id'}"/>
+                <filter name="group_medium" string="Medium" context="{'group_by': 'medium_id'}"/>
+                <filter name="group_source" string="Source" context="{'group_by': 'source_id'}"/>
+            </filter>
+        </field>
+    </record>
+</odoo>

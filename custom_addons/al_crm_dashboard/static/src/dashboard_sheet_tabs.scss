@@ -1,0 +1,17 @@
+.o_spreadsheet_dashboard_action .o_renderer:has(.o_al_crm_sheet_tabs) {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .o_al_crm_sheet_tabs {
+        flex: 0 0 auto;
+        min-height: 42px;
+        overflow-x: auto;
+    }
+
+    .o_spreadsheet_container {
+        flex: 1 1 auto;
+        min-height: 0;
+        height: auto;
+    }
+}

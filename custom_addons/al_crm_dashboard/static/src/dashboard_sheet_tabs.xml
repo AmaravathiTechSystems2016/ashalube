@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-inherit="spreadsheet_dashboard.DashboardAction" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('o_renderer')]/SpreadsheetComponent" position="before">
+            <div t-if="crmSheets.length > 1" class="o_al_crm_sheet_tabs d-flex align-items-center gap-1 px-2 border-bottom bg-view">
+                <button t-foreach="crmSheets" t-as="sheet" t-key="sheet.id"
+                        type="button"
+                        class="btn btn-sm o_al_crm_sheet_tab"
+                        t-att-class="sheet.active ? 'btn-primary' : 'btn-light'"
+                        t-on-click="() => this.activateCrmSheet(sheet.id)">
+                    <t t-esc="sheet.name"/>
+                </button>
+            </div>
+        </xpath>
+    </t>
+</templates>
